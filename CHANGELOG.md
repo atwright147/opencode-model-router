@@ -5,6 +5,27 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **`zen-value` preset**, routing all three tiers through the OpenCode Zen gateway
+  (`opencode`) instead of a vendor provider: `@fast` = `opencode/big-pickle` (free on Zen
+  for a limited time), `@medium` = `opencode/claude-sonnet-5`, `@heavy` =
+  `opencode/claude-opus-5`. All three ids are verified against the live Zen catalog at
+  `https://opencode.ai/zen/v1/models`. The other seven presets are unchanged. Because Zen
+  bills `@medium`/`@heavy` per token while `@fast` is free, the per-tier descriptions
+  state that `costRatio` is an estimated token-spend multiplier, not a price ratio.
+
+- **A preset-scoped fallback chain for `zen-value`** (`opencode→zai→anthropic`) under
+  `fallback.presets` rather than `fallback.global`. A non-empty `presets` map replaces
+  `global` for that preset only, so the chain renders into the `Chain:` line exclusively
+  while `zen-value` is active. Every other preset's protocol — and the README's measured
+  prompt-size figures — are byte-identical to before; the only snapshot change is one
+  added `protocol-zen-value` entry. Note the chain is keyed by provider, not by tier, so
+  a Zen outage fails the preset over wholesale rather than failing each tier to a
+  differently-priced alternative.
+
 ## [1.15.0] - 2026-09-28
 
 The acceptance gate no longer runs a test suite per delegation. `testsPass` now runs only

@@ -244,6 +244,45 @@
         ]
       }
     },
+    "zen-value": {
+      "fast": {
+        "model": "opencode/big-pickle",
+        "costRatio": 1,
+        "description": "Big Pickle for read-only exploration, search, and simple lookups (OpenCode Zen; @fast is free on Zen while @medium and @heavy are pay-as-you-go, so costRatio is an estimated token-spend multiplier, not a price ratio)",
+        "steps": 30,
+        "whenToUse": [
+          "Codebase exploration and search",
+          "Simple file reads and listing",
+          "Grep/glob operations",
+          "Quick lookups and research"
+        ]
+      },
+      "medium": {
+        "model": "opencode/claude-sonnet-5",
+        "costRatio": 5,
+        "description": "Claude Sonnet 5 through OpenCode Zen for implementation, refactoring, and tests (billed per token; costRatio is an estimated token-spend multiplier, not a price ratio)",
+        "steps": 50,
+        "whenToUse": [
+          "Feature implementation",
+          "Refactoring",
+          "Writing tests",
+          "Code review",
+          "Bug fixes"
+        ]
+      },
+      "heavy": {
+        "model": "opencode/claude-opus-5",
+        "costRatio": 20,
+        "description": "Claude Opus 5 through OpenCode Zen for architecture, complex debugging, and security (billed per token; costRatio is an estimated token-spend multiplier, not a price ratio)",
+        "steps": 120,
+        "whenToUse": [
+          "Architecture decisions",
+          "Complex debugging (after 2+ failures)",
+          "Security review",
+          "Performance optimization"
+        ]
+      }
+    },
     "hybrid": {
       "fast": {
         "model": "openai/gpt-6-luna-fast",
@@ -435,6 +474,14 @@
         "openai",
         "google"
       ]
+    },
+    "presets": {
+      "zen-value": {
+        "opencode": [
+          "zai",
+          "anthropic"
+        ]
+      }
     }
   },
   "rules": [

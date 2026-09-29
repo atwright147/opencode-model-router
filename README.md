@@ -35,7 +35,7 @@ Every tier carries its `costRatio` (fast=1x, medium=5x, heavy=20x) injected into
 If the orchestrator is already running on Opus, the rule `self∈opus→never→@heavy` fires — it does the heavy work itself rather than delegating to another Opus instance.
 
 **Multi-provider support with automatic fallback.**
-Seven presets out of the box: Anthropic, OpenAI, GitHub Copilot, Google, hybrid, fable-effort, and Zai (GLM). Switch with `/preset`. If a provider fails, the fallback chain tries the next one automatically.
+Eight presets out of the box: Anthropic, OpenAI, GitHub Copilot, Google, hybrid, fable-effort, Zai (GLM), and zen-value (OpenCode Zen). Switch with `/preset`. If a provider fails, the fallback chain tries the next one automatically.
 
 **Plan annotation for long tasks.**
 `/annotate-plan` reads a markdown plan and tags each step with `[tier:fast]`, `[tier:medium]`, or `[tier:heavy]` — removing all routing ambiguity from multi-step workflows.
@@ -373,7 +373,7 @@ For an npm install, `tiers.json` is **inside the cached package directory**, not
 
 ### Presets
 
-The plugin ships with seven presets (switch with `/preset <name>`):
+The plugin ships with eight presets (switch with `/preset <name>`):
 
 **anthropic** (default):
 | Tier | Model | Cost ratio |
@@ -429,6 +429,26 @@ cache warm. The cost ratios are estimated token-spend multipliers, not price dif
 
 @medium and @heavy share one model, so — as with `fable-effort` — the cost ratios are
 estimated token-spend multipliers, not price differences.
+
+**zen-value** — a low-cost floor through the OpenCode Zen gateway (the `opencode` provider; needs a Zen API key):
+| Tier | Model | Cost ratio |
+|------|-------|-----------|
+| @fast | `opencode/big-pickle` | 1x |
+| @medium | `opencode/claude-sonnet-5` | 5x |
+| @heavy | `opencode/claude-opus-5` | 20x |
+
+@fast is free on Zen for a limited time while @medium and @heavy are billed per token, so
+the cost ratios are estimated token-spend multipliers, not price differences. Note that
+Big Pickle is listed among the Zen models whose data may be used to improve the model
+during its free period; `space-bunny-free` and `longcat-2.5-preview-free` are the
+zero-retention free alternatives if that matters for your code.
+
+`zen-value` is also the one preset with a preset-scoped failover chain
+(`opencode→zai→anthropic`). The chain is keyed by provider, not by tier, so a Zen outage
+fails the whole preset over to the flat-rate `zai` preset and then to `anthropic` — it
+cannot fail @fast to a cheap model and @heavy to an expensive one independently. Because
+the chain lives under `fallback.presets` rather than `fallback.global`, it renders only
+while `zen-value` is active and leaves the other presets' prompts unchanged.
 
 ### Per-tier `effort`
 
